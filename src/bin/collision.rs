@@ -57,7 +57,7 @@ fn setup(
             Collider::from(obj_shape),
         )
     };
-    let transform_index = |i: usize| Transform::from_xyz(i as f32 * 2.5 - 2.0, 0.7, 0.0);
+    let transform_index = |i: usize| Transform::from_xyz(i as f32 * 2.7 - 4.5, 0.7, 0.0);
 
     commands
         .spawn((
@@ -69,11 +69,23 @@ fn setup(
             parent.spawn((object(), RigidBody::Static));
         });
 
-    // Potential bug: this object never reports a collision
     commands
         .spawn((
             Name::new("Object B"),
             SpatialBundle::from_transform(transform_index(1)),
+        ))
+        .with_children(|parent| {
+            parent.spawn(Collider::from(sensor_shape));
+            parent
+                .spawn((object(), RigidBody::Static))
+                .insert(Transform::from_xyz(1.0, 0.0, 0.0));
+        });
+
+    // Potential bug: this object never reports a collision
+    commands
+        .spawn((
+            Name::new("Object C"),
+            SpatialBundle::from_transform(transform_index(2)),
         ))
         .with_children(|parent| {
             parent.spawn(Collider::trimesh_from_mesh(&Mesh::from(sensor_shape)).unwrap());
@@ -82,11 +94,11 @@ fn setup(
 
     commands
         .spawn((
-            Name::new("Object C"),
-            SpatialBundle::from_transform(transform_index(2)),
+            Name::new("Object D"),
+            SpatialBundle::from_transform(transform_index(3)),
         ))
         .with_children(|parent| {
-            parent.spawn(Collider::from(sensor_shape));
+            parent.spawn(Collider::trimesh_from_mesh(&Mesh::from(sensor_shape)).unwrap());
             parent
                 .spawn((object(), RigidBody::Static))
                 .insert(Transform::from_xyz(1.0, 0.0, 0.0));
